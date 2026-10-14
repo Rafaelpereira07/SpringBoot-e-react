@@ -1,0 +1,11 @@
+.git
+.gitignore
+.env
+.env.*
+.vscode
+node_modules
+npm-debug.log*
+dist
+*.tsbuildinfo
+coverage
+.DS_Store
