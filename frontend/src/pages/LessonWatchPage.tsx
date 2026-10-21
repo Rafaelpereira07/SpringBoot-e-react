@@ -10,6 +10,29 @@ import { progressService } from '@/services/progressService'
 import { extractErrorMessage } from '@/lib/api'
 import type { ApiError, LessonVideo } from '@/types'
 
+function getYouTubeEmbedUrl(rawUrl: string): string | null {
+  try {
+    const url = new URL(rawUrl)
+    const host = url.hostname.toLowerCase().replace(/^www\./, '')
+    let videoId: string | null = null
+
+    if (host === 'youtu.be') {
+      videoId = url.pathname.split('/').filter(Boolean)[0] ?? null
+    } else if (host === 'youtube.com' || host === 'm.youtube.com') {
+      if (url.pathname === '/watch') {
+        videoId = url.searchParams.get('v')
+      } else {
+        const pathMatch = url.pathname.match(/^\/(?:embed|shorts|live)\/([^/?]+)/)
+        videoId = pathMatch?.[1] ?? null
+      }
+    }
+
+    return videoId ? `https://www.youtube.com/embed/${encodeURIComponent(videoId)}` : null
+  } catch {
+    return null
+  }
+}
+
 export function LessonWatchPage() {
   const { courseSlug = '', lessonSlug = '' } = useParams()
 
@@ -89,6 +112,8 @@ export function LessonWatchPage() {
     return <Spinner label="Carregando aula" />
   }
 
+  const youtubeEmbedUrl = getYouTubeEmbedUrl(video.videoUrl)
+
   return (
     <div className="mx-auto max-w-4xl px-6 py-10">
       <Link to={`/cursos/${courseSlug}`} className="text-sm text-muted hover:text-amber">
@@ -98,8 +123,20 @@ export function LessonWatchPage() {
       <h1 className="mt-4 font-display text-2xl font-semibold text-paper">{video.title}</h1>
 
       <div className="mt-6 overflow-hidden rounded-lg border border-ink-line bg-black">
-        {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
-        <video key={video.id} controls className="aspect-video w-full" src={video.videoUrl} />
+        {youtubeEmbedUrl ? (
+          <iframe
+            key={video.id}
+            className="aspect-video w-full"
+            src={youtubeEmbedUrl}
+            title={video.title}
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            referrerPolicy="strict-origin-when-cross-origin"
+            allowFullScreen
+          />
+        ) : (
+          // eslint-disable-next-line jsx-a11y/media-has-caption
+          <video key={video.id} controls className="aspect-video w-full" src={video.videoUrl} />
+        )}
       </div>
 
       <div className="mt-6 flex items-center gap-4">
