@@ -18,7 +18,7 @@ docker compose up --build
 Isso inicia:
 
 - API no endereço: http://localhost:8080
-- Frontend no endereço: http://localhost:5173
+- Frontend no endereço: http://localhost:2052
 - MySQL na porta: 3307
 
 ### Reiniciar e acompanhar logs
@@ -51,4 +51,4 @@ docker compose watch
 
 - O backend usa MySQL e a URL de conexão fica em `backend/.env`.
 - O frontend usa a variável `VITE_API_URL=http://localhost:8080`.
-- A origem do frontend no CORS do backend deve incluir `http://localhost:5173`.
+- A origem do frontend no CORS do backend deve incluir `http://localhost:2052`.

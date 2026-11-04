@@ -30,7 +30,7 @@ cp .env.example .env
 # edite VITE_API_URL se a API nao estiver em http://localhost:8080
 
 npm install
-npm run dev       # http://localhost:5173
+npm run dev       # http://localhost:2052
 ```
 
 Outros scripts:
