@@ -12,5 +12,6 @@ export default defineConfig({
   },
   server: {
     port: 2052,
+    allowedHosts: ['rafael.frameworksweb.com.br'],
   },
 })
